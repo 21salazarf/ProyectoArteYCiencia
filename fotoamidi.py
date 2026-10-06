@@ -88,6 +88,8 @@ def matriz_a_midi(matriz, ruta_midi, nota_base=40, rango_notas=48, duracion_nota
     with open(ruta_midi, "wb") as f:
         midi.writeFile(f)
 
+# jaja como vas a ser mexicano ajadfklsjfklfja
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
