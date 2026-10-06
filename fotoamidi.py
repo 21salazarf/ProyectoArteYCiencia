@@ -16,7 +16,7 @@ import sys
 import numpy as np
 from PIL import Image
 from midiutil import MIDIFile
-X
+
 # Instrumentos General MIDI más comunes (número de programa 0-127).
 # Lista completa: https://en.wikipedia.org/wiki/General_MIDI#Program_change_events
 INSTRUMENTOS = {
