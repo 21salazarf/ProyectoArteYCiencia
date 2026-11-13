@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retrato sonoro</title>
+  <meta name="description" content="Sube una foto a color y escucha cómo suena. Proyecto de Arte y Ciencia sobre Ryoji Ikeda.">
+  <link rel="preload" href="app/fuentes/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="app/fuentes/atkinson.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="app/estilos.css">
+</head>
+<body>
+  <header class="portada">
+    <div class="portada-texto">
+      <h1>Retrato sonoro</h1>
+      <p class="entrada">Sube una foto a color y escucha cómo suena. El matiz elige la tonalidad y los instrumentos, el brillo dibuja la melodía y el colorido decide cuántas voces tocan.</p>
+      <p class="credito">Proyecto del curso Arte y Ciencia, Universidad de los Andes. Caso de estudio: Ryoji Ikeda.</p>
+    </div>
+    <figure class="albers albers-grande" role="img" aria-label="Cuadrados concéntricos pintados con los colores principales de la foto">
+      <span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span>
+    </figure>
+  </header>
+
+  <main>
+    <section id="paso-terminos" class="bloque terminos-bloque">
+      <h2>Antes de empezar</h2>
+      <div class="terminos" tabindex="0">
+        <p><b>Retrato sonoro</b> es un proyecto académico del curso Arte y Ciencia (Universidad de los Andes). Al usar esta página aceptas lo siguiente:</p>
+        <ol>
+          <li><b>Tu foto no sale de tu dispositivo.</b> El análisis y el sonido se generan dentro de tu navegador. La imagen no se envía a ningún servidor y no se guarda.</li>
+          <li><b>Solo subes fotos tuyas</b> o de personas que te dieron permiso para usarlas.</li>
+          <li><b>El sonido no revela tu cara.</b> Cada fila de la foto se resume en unos pocos números (brillo, contraste y color). A partir del audio o del MIDI no se puede reconstruir la imagen.</li>
+          <li><b>Los archivos son tuyos.</b> El audio (.wav) y el MIDI (.mid) solo se descargan si tú lo pides.</li>
+          <li><b>Presentación del curso.</b> El equipo solo mostrará o reproducirá tu retrato sonoro en clase si tú lo autorizas en ese momento.</li>
+          <li><b>Participación voluntaria.</b> Puedes dejar de participar cuando quieras: basta con cerrar esta página.</li>
+        </ol>
+        <p class="tenue">Equipo: [nombres del equipo]. Contacto: [correo del equipo].</p>
+      </div>
+      <label class="acepto">
+        <input type="checkbox" id="acepto">
+        <span>Leí y acepto los términos y condiciones</span>
+      </label>
+    </section>
+
+    <section id="paso-foto" class="bloque bloqueado" aria-disabled="true">
+      <h2>Elige una foto</h2>
+      <label id="zona" class="zona" for="archivo">
+        <input type="file" id="archivo" accept="image/*" multiple disabled>
+        <span class="zona-titulo">Arrastra aquí una foto a color</span>
+        <span class="zona-sub">o haz clic para elegirla (JPG, PNG o WEBP). Puedes elegir hasta 3 para crear una armonía.</span>
+        <span class="zona-bloqueo">Acepta los términos para subir una foto.</span>
+      </label>
+    </section>
+
+    <section id="taller" class="taller" hidden>
+      <div class="columna-foto">
+        <div id="fotos" class="fotos" data-cantidad="1"></div>
+        <div id="agregar-bloque" class="agregar">
+          <button id="agregar" class="boton secundario" type="button">Agregar otra foto</button>
+          <p id="agregar-ayuda" class="ayuda">Suma hasta 3 fotos y suenan juntas, como una armonía.</p>
+        </div>
+        <input type="file" id="archivo-extra" accept="image/*" multiple hidden>
+        <input type="file" id="archivo-cambio" accept="image/*" hidden>
+      </div>
+
+      <div class="columna-roll">
+        <div class="fila">
+          <h2 id="titulo-roll">Escúchala</h2>
+          <span id="tiempo" class="valor">0.0 / 0.0 s</span>
+        </div>
+        <canvas id="roll" aria-label="Teclado con las notas que genera la foto. Haz clic para saltar a otro momento."></canvas>
+        <div class="transporte">
+          <button id="play" class="boton" type="button">Reproducir</button>
+          <button id="wav" class="boton secundario" type="button">Descargar audio (.wav)</button>
+          <button id="mid" class="boton secundario" type="button">Descargar MIDI (.mid)</button>
+          <span id="estado" class="estado" role="status"></span>
+        </div>
+      </div>
+      <div class="columna-lectura">
+        <div class="lectura-cabeza">
+          <h2 id="titulo-lectura">Así suena tu foto</h2>
+          <figure class="albers albers-chico" role="img" aria-label="Los cuatro colores principales de tu foto. El del centro es el matiz dominante.">
+            <span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span>
+          </figure>
+        </div>
+        <dl class="medidas">
+          <div class="medida">
+            <dt>Colorido</dt>
+            <dd>
+              <span id="m-colorido" class="cifra">0</span>
+              <span id="m-colorido-txt" class="cifra-nota"></span>
+              <span class="barra" aria-hidden="true"><span id="b-colorido" class="relleno"></span><span class="umbral"></span></span>
+            </dd>
+          </div>
+          <div class="medida">
+            <dt>Matiz dominante</dt>
+            <dd><span id="m-matiz-chip" class="muestra"></span><span id="m-matiz" class="cifra">0°</span><span id="m-familia" class="cifra-nota"></span></dd>
+          </div>
+          <div class="medida">
+            <dt>Temperatura</dt>
+            <dd>
+              <span class="barra temperatura" aria-hidden="true"><span id="b-temp" class="aguja"></span></span>
+              <span class="extremos"><span>fría</span><span>cálida</span></span>
+            </dd>
+          </div>
+        </dl>
+        <dl class="resultado">
+          <div><dt>Carácter</dt><dd id="r-mundo"></dd></div>
+          <div><dt>Tonalidad</dt><dd id="r-tonalidad"></dd></div>
+          <div><dt>Instrumentos</dt><dd id="r-instrumentos"></dd></div>
+          <div><dt>Tempo</dt><dd id="r-tempo"></dd></div>
+          <div><dt>Textura</dt><dd id="r-textura"></dd></div>
+        </dl>
+        <div class="por-que" aria-live="polite">
+          <h3>Por qué suena así</h3>
+          <div id="por-que-texto"></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Cada fila de la foto, de arriba abajo, es un instante de la música. El colorido se mide con la métrica de Hasler y Süsstrunk (2003) y la tónica sigue el círculo de colores de Scriabin. Los cuadrados recuerdan la serie <i>Homage to the Square</i> de Josef Albers.</p>
+    <p>Sonidos de instrumentos: FluidR3_GM (Frank Wen), vía midi-js-soundfonts (Benjamin Gleitzman), licencia CC BY 3.0. Tipografías: Bricolage Grotesque y Atkinson Hyperlegible Next, licencia SIL OFL.</p>
+  </footer>
+
+  <script src="app/analisis.js"></script>
+  <script src="app/composicion.js"></script>
+  <script src="app/explicacion.js"></script>
+  <script src="app/audio.js"></script>
+  <script src="app/midi.js"></script>
+  <script src="app/pianoroll.js"></script>
+  <script src="app/main.js"></script>
+</body>
+</html>
